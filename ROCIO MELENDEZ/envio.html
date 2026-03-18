@@ -116,13 +116,33 @@ Orden cerrada
 </div>
 
 </div>
+<div id="map"></div>
 
+<script>
+
+var map = L.map('map').setView([13.4833,-88.1833],13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map);
+
+var conductor = L.marker([13.4833,-88.1833]).addTo(map);
+
+function actualizarUbicacion(lat,lng){
+
+conductor.setLatLng([lat,lng]);
+
+}
+
+</script>
 <hr>
 
 <h3>Panel del Conductor</h3>
 
 <button onclick="nextStatus()">Actualizar Estado</button>
+<button onclick="estado('en_ruta')">Iniciar Ruta</button>
 
+<button onclick="estado('entregado')">Pedido Entregado</button>
 <br><br>
 
 <label>Subir foto de entrega:</label>
@@ -153,6 +173,7 @@ let img = document.getElementById("fotoEntrega");
 img.src = URL.createObjectURL(event.target.files[0]);
 
 }
+
 
 </script>
 

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Entregas</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #f4f6f9;
+}
+
+/* Header bonito */
+header {
+    background: linear-gradient(90deg, #ff7a18, #ffb347);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Panel superior */
+.panel {
+    background: white;
+    padding: 15px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    position: relative;
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    width: 220px;
+}
+
+button {
+    background: #ff7a18;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+button:hover {
+    background: #ff5200;
+}
+
+/* Estado */
+.estado {
+    padding: 10px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+/* MAPA PRO */
+#map {
+    height: 75vh;
+    margin: 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+/* Botón flotante */
+.entregado {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.entregado:hover {
+    background: #1e7e34;
+}
+</style>
+
+</style>
+</head>
+
+<body>
+
+<header>📦 Seguimiento de Pedido</header>
+
+<div class="panel">
+
+<input id="origen" placeholder="Ubicación del repartidor">
+
+<input id="destino" placeholder="Dirección completa del cliente">
+
+<button onclick="iniciarEntrega()">Iniciar entrega</button>
+
+<div class="estado" id="estado">
+Estado: Pedido preparado
+</div>
+
+<div class="info" id="info"></div>
+
+</div>
+
+<div id="map"></div>
+
+<script>
+
+var map=L.map('map').setView([13.4833,-88.1833],13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:19
+}).addTo(map);
+
+var rutaLinea;
+var marcadorRepartidor;
+var marcadorCliente;
+
+function buscarDireccion(direccion){
+
+return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${direccion}`)
+.then(res=>res.json());
+
+}
+
+async function iniciarEntrega(){
+
+document.getElementById("estado").innerHTML="Buscando direcciones...";
+
+var origen=document.getElementById("origen").value;
+var destino=document.getElementById("destino").value;
+
+var geo1=await buscarDireccion(origen);
+var geo2=await buscarDireccion(destino);
+
+var o=geo1[0];
+var d=geo2[0];
+
+var lat1=o.lat;
+var lon1=o.lon;
+
+var lat2=d.lat;
+var lon2=d.lon;
+
+marcadorCliente=L.marker([lat2,lon2]).addTo(map)
+.bindPopup("Cliente")
+.openPopup();
+
+document.getElementById("estado").innerHTML="Calculando ruta...";
+
+var ruta=await fetch(
+`https://router.project-osrm.org/route/v1/driving/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`
+).then(res=>res.json());
+
+var coords=ruta.routes[0].geometry.coordinates;
+
+var puntos=coords.map(c=>[c[1],c[0]]);
+
+rutaLinea=L.polyline(puntos,{
+color:"blue",
+weight:6
+}).addTo(map);
+
+map.fitBounds(rutaLinea.getBounds());
+
+var distancia=(ruta.routes[0].distance/1000).toFixed(2);
+var tiempo=(ruta.routes[0].duration/60).toFixed(0);
+
+document.getElementById("info").innerHTML=
+"🚚 Distancia: "+distancia+" km | ⏱ Tiempo estimado: "+tiempo+" min";
+
+marcadorRepartidor=L.marker(puntos[0]).addTo(map)
+.bindPopup("Repartidor");
+
+simularEntrega(puntos);
+
+}
+
+function simularEntrega(puntos){
+
+let i=0;
+
+document.getElementById("estado").innerHTML="🚚 Pedido en camino";
+
+var mover=setInterval(()=>{
+
+if(i>=puntos.length){
+
+clearInterval(mover);
+
+document.getElementById("estado").innerHTML="📦 Pedido entregado";
+
+return;
+
+}
+
+marcadorRepartidor.setLatLng(puntos[i]);
+
+i++;
+
+},900);
+
+}
+
+</script>
+<script>
+// Obtener la dirección desde la URL
+const params = new URLSearchParams(window.location.search);
+const direccion = params.get("direccion");
+
+// Si existe, ponerla en el input
+if (direccion) {
+    document.getElementById("destino").value = direccion;
+
+    // Llamar función para mostrar en el mapa
+    buscarDireccion(direccion);
+}
+</script>
+
+
+
+<a href="4-entregado.html"> ✔ Entregado</a>
+
+</body>
+</html>
