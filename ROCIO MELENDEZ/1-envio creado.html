@@ -113,10 +113,21 @@ function mostrar() {
     let nombre = document.getElementById("nombre").value;
     document.getElementById("mostrarNombre").textContent = nombre;
 }
+
 </script>
 <p><strong>Direccion:</strong> <span id="mostrarDireccion"></span></p>
         <input type="text" id="direccion" placeholder="Dirección del cliente">
         <button onclick="verSeguimiento()">Ver seguimiento</button>
+
+
+<script>
+function guardar(){
+  let direccion = document.getElementById("dir").value;
+  localStorage.setItem("direccionCliente", direccion);
+
+  window.location.href = "mapa.html"; // tu página del mapa
+}
+</script>
     </div>
 
     <div class="status">
@@ -134,7 +145,7 @@ function mostrar() {
 <script>
 function verSeguimiento() {
     let direccion = document.getElementById("direccion").value;
-    window.location.href = "3-en-ruta.html?direccion=" + encodeURIComponent(direccion);
+    window.location.href = "2-ruta.html?direccion=" + encodeURIComponent(direccion);
 }
 </script>
 

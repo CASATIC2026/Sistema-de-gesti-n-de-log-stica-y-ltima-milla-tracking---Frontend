@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Seguimiento </title>
+<title>Seguimiento PRO NIVEL DIOS</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -51,10 +51,11 @@ button {
 
 <body>
 
-<div class="header">📦 Seguimiento de Pedido </div>
+<div class="header">📦 Seguimiento de Pedido PRO</div>
 
 <div class="controls">
- 
+  <input type="text" id="direccion" placeholder="Ej: Colonia Milagro de la Paz, San Miguel">
+  <button onclick="iniciar()">Iniciar entrega</button>
   <div class="estado" id="estado">Estado: Esperando</div>
 </div>
 
@@ -62,7 +63,7 @@ button {
 
 <script>
 
-// 📍 BODEGA FIJA (san salvador)
+// 📍 BODEGA FIJA (San Miguel)
 const bodega = [-88.1833, 13.4833]; // [lng, lat]
 
 // Crear mapa
@@ -161,11 +162,6 @@ function mover(ruta) {
 }
 
 </script>
-
-</body>
-</html>
-
-<a href="3-pedido entregado.html"> ✔ Entregado</a>
 
 </body>
 </html>
