@@ -17,8 +17,6 @@ body {
     align-items: center;
     height: 100vh;
 }
-
-/* Tarjeta principal */
 .container {
     background: #fff;
     width: 400px;
@@ -27,32 +25,25 @@ body {
     box-shadow: 0 10px 30px rgba(0,0,0,0.2);
     animation: fadeIn 0.6s ease;
 }
-
 @keyframes fadeIn {
     from {opacity:0; transform: translateY(20px);}
     to {opacity:1; transform: translateY(0);}
 }
-
-/* Títulos */
 h2 {
     margin: 0;
     color: #333;
 }
-
 .section {
     margin-top: 20px;
 }
-
-/* Inputs */
 input {
     width: 65%;
     padding: 10px;
     border-radius: 8px;
     border: 1px solid #ccc;
     outline: none;
+    margin-bottom: 10px;
 }
-
-/* Botón */
 button {
     padding: 10px 15px;
     border: none;
@@ -63,12 +54,9 @@ button {
     font-weight: bold;
     transition: 0.3s;
 }
-
 button:hover {
     background: #ff5200;
 }
-
-/* Estado */
 .status {
     background: #e8f5e9;
     padding: 10px;
@@ -76,19 +64,11 @@ button:hover {
     margin-top: 15px;
     color: #2e7d32;
 }
-
-/* Conductor */
 .driver {
     background: #f5f7ff;
     padding: 15px;
     border-radius: 15px;
     margin-top: 20px;
-}
-
-/* Iconos */
-.icon {
-    font-size: 22px;
-    margin-right: 8px;
 }
 </style>
 </head>
@@ -96,38 +76,16 @@ button:hover {
 <body>
 
 <div class="container">
-
     <h2>📦 Envío Creado</h2>
 
     <div class="section">
         <p><strong>Número de Orden:</strong> #45892</p>
-      
+        <p><strong>Cliente:</strong> <span id="mostrarNombre"></span></p>
 
-<p><strong>Cliente:</strong> <span id="mostrarNombre"></span></p>
+        <input type="text" id="nombre" placeholder="Nombre del cliente" oninput="mostrar()">
+        <input type="text" id="direccion" placeholder="Ingresa tu dirección">
 
-<input type="text" id="nombre" placeholder="Nombre del cliente">
-
-
-<script>
-function mostrar() {
-    let nombre = document.getElementById("nombre").value;
-    document.getElementById("mostrarNombre").textContent = nombre;
-}
-
-</script>
-<p><strong>Direccion:</strong> <span id="mostrarDireccion"></span></p>
-        <input type="text" id="direccion" placeholder="Dirección del cliente">
-        <button onclick="verSeguimiento()">Ver seguimiento</button>
-
-
-<script>
-function guardar(){
-  let direccion = document.getElementById("dir").value;
-  localStorage.setItem("direccionCliente", direccion);
-
-  window.location.href = "mapa.html"; // tu página del mapa
-}
-</script>
+        <button onclick="guardarDireccion()">Continuar</button>
     </div>
 
     <div class="status">
@@ -139,13 +97,22 @@ function guardar(){
         <p><strong>Nombre:</strong> Carlos López</p>
         <p>El conductor recibirá la orden en su aplicación.</p>
     </div>
-
 </div>
 
 <script>
-function verSeguimiento() {
+function mostrar() {
+    let nombre = document.getElementById("nombre").value;
+    document.getElementById("mostrarNombre").textContent = nombre;
+}
+
+function guardarDireccion() {
     let direccion = document.getElementById("direccion").value;
-    window.location.href = "2-ruta.html?direccion=" + encodeURIComponent(direccion);
+    if (!direccion.trim()) {
+        alert("Por favor ingresa una dirección válida.");
+        return;
+    }
+    localStorage.setItem("direccionCliente", direccion);
+    window.location.href = "2-ruta.html"; // Aquí se abre la segunda página
 }
 </script>
 
