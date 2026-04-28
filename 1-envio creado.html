@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Envío Creado</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #4facfe, #00f2fe);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.container {
+    background: #fff;
+    width: 400px;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+    from {opacity:0; transform: translateY(20px);}
+    to {opacity:1; transform: translateY(0);}
+}
+h2 {
+    margin: 0;
+    color: #333;
+}
+.section {
+    margin-top: 20px;
+}
+input {
+    width: 65%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 15px;
+    border: none;
+    background: #ff7a18;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+button:hover {
+    background: #ff5200;
+}
+.status {
+    background: #e8f5e9;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 15px;
+    color: #2e7d32;
+}
+.driver {
+    background: #f5f7ff;
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>📦 Envío Creado</h2>
+
+    <div class="section">
+        <p><strong>Número de Orden:</strong> #45892</p>
+        <p><strong>Cliente:</strong> <span id="mostrarNombre"></span></p>
+
+        <input type="text" id="nombre" placeholder="Nombre del cliente" oninput="mostrar()">
+        <input type="text" id="direccion" placeholder="Ingresa tu dirección">
+
+        <button onclick="guardarDireccion()">Continuar</button>
+    </div>
+
+    <div class="status">
+        ✅ El administrador registró el envío en el sistema
+    </div>
+
+    <div class="driver">
+        <h3>🚚 Conductor Asignado</h3>
+        <p><strong>Nombre:</strong> Carlos López</p>
+        <p>El conductor recibirá la orden en su aplicación.</p>
+    </div>
+</div>
+
+<script>
+function mostrar() {
+    let nombre = document.getElementById("nombre").value;
+    document.getElementById("mostrarNombre").textContent = nombre;
+}
+
+function guardarDireccion() {
+    let direccion = document.getElementById("direccion").value;
+    if (!direccion.trim()) {
+        alert("Por favor ingresa una dirección válida.");
+        return;
+    }
+    localStorage.setItem("direccionCliente", direccion);
+    window.location.href = "2-ruta.html"; // Aquí se abre la segunda página
+}
+</script>
+
+</body>
+</html>
