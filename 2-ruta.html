@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>PEDIDO</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+body { font-family: Arial; margin:0; }
+
+.header {
+  background: linear-gradient(90deg, orange, #ff6a00);
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+}
+
+.controls {
+  padding: 10px;
+  background: #eee;
+}
+
+.estado {
+  font-weight: bold;
+}
+
+#map { height: 500px; }
+</style>
+</head>
+
+<body>
+
+<div class="header">📦 Seguimiento de Pedido</div>
+
+<div class="controls">
+  <div class="estado" id="estado">Estado: Cargando...</div>
+</div>
+
+<div id="map"></div>
+
+<script>
+// 📦 BODEGA (San Salvador)
+const bodega = [13.6929, -89.2182];
+
+// Crear mapa
+var map = L.map('map').setView(bodega, 13);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '© OpenStreetMap'
+}).addTo(map);
+
+// Marcador bodega
+L.marker(bodega).addTo(map).bindPopup("📦 Bodega");
+
+// Obtener dirección del cliente desde localStorage
+const direccion = localStorage.getItem("direccionCliente");
+
+let repartidor;
+
+// 🔎 Geocodificar dirección
+async function geocodificar(direccion) {
+  try {
+    let url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(direccion)}`;
+    let res = await fetch(url);
+    let data = await res.json();
+
+    if (data.length === 0) {
+      alert("Dirección no encontrada");
+      return null;
+    }
+
+    return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
+  } catch (e) {
+    console.error("Error en geocodificación:", e);
+    return null;
+  }
+}
+
+// 🚀 Iniciar automáticamente
+async function iniciar() {
+  if (!direccion) {
+    document.getElementById("estado").innerText = "❌ No hay dirección del cliente";
+    return;
+  }
+
+  document.getElementById("estado").innerText = "Estado: Empaquetando 📦";
+
+  let cliente = await geocodificar(direccion);
+  if (!cliente) return;
+
+  // Marcador cliente
+  L.marker(cliente).addTo(map)
+    .bindPopup("🏠 Cliente: " + direccion)
+    .openPopup();
+
+  // Ruta real
+  try {
+    let urlRuta = `https://router.project-osrm.org/route/v1/driving/${bodega[1]},${bodega[0]};${cliente[1]},${cliente[0]}?overview=full&geometries=geojson`;
+    let res = await fetch(urlRuta);
+    let data = await res.json();
+
+    let rutaCoords = data.routes[0].geometry.coordinates;
+    let rutaLatLng = rutaCoords.map(c => [c[1], c[0]]);
+
+    // Dibujar ruta
+    L.polyline(rutaLatLng, {color: 'orange'}).addTo(map);
+
+    map.fitBounds(rutaLatLng);
+
+    // Repartidor
+    repartidor = L.marker(rutaLatLng[0]).addTo(map)
+      .bindPopup("🚚 Repartidor");
+
+    setTimeout(() => {
+      document.getElementById("estado").innerText = "Estado: En camino 🚚";
+      mover(rutaLatLng);
+    }, 2000);
+  } catch (e) {
+    console.error("Error al obtener ruta:", e);
+  }
+}
+
+// 🚚 Movimiento
+function mover(ruta) {
+  let i = 0;
+  let intervalo = setInterval(() => {
+    if (i >= ruta.length) {
+      clearInterval(intervalo);
+      document.getElementById("estado").innerText = "Estado: Entregado ✅";
+      return;
+    }
+
+    repartidor.setLatLng(ruta[i]);
+
+    if (i > ruta.length * 0.8) {
+      document.getElementById("estado").innerText = "Estado: Cerca del destino 📍";
+    }
+
+    i++;
+  }, 150);
+}
+
+// Iniciar automáticamente
+iniciar();
+ 
+ 
+</script>
+
+</body>
+</html>

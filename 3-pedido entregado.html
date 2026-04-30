@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pedido Entregado</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #43e97b, #38f9d7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Tarjeta */
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    animation: aparecer 0.5s ease;
+}
+
+@keyframes aparecer {
+    from {opacity:0; transform: scale(0.9);}
+    to {opacity:1; transform: scale(1);}
+}
+
+/* Icono */
+.icono {
+    font-size: 50px;
+}
+
+/* Título */
+h2 {
+    margin: 10px 0;
+    color: #2e7d32;
+}
+
+/* Texto */
+p {
+    color: #555;
+}
+
+/* Input archivo */
+input[type="file"] {
+    margin-top: 15px;
+}
+
+/* Botones */
+.btn {
+    display: block;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: 0.3s;
+}
+
+.cerrar {
+    background: #ff4d4d;
+    color: white;
+}
+
+.cerrar:hover {
+    background: #cc0000;
+}
+
+.guardar {
+    background: #28a745;
+    color: white;
+}
+
+.guardar:hover {
+    background: #1e7e34;
+}
+
+/* Preview imagen */
+#preview {
+    margin-top: 15px;
+    max-width: 100%;
+    border-radius: 10px;
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="icono">📦✅</div>
+
+    <h2>Pedido Entregado</h2>
+
+    <p>El conductor entregó el paquete correctamente.</p>
+
+    <input type="file" id="foto" accept="image/*" onchange="mostrarImagen(event)">
+
+    <img id="preview">
+
+    <button class="btn guardar" onclick="guardarEntrega()">Guardar evidencia</button>
+
+    <button class="btn cerrar" onclick="cerrarOrden()">Cerrar orden</button>
+
+</div>
+
+<script>
+// Mostrar imagen seleccionada
+function mostrarImagen(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("preview");
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = "block";
+    }
+}
+
+// Guardar (simulación)
+function guardarEntrega() {
+    alert("✅ Evidencia guardada correctamente");
+}
+
+// Cerrar orden
+function cerrarOrden() {
+    alert("📦 Orden finalizada");
+    window.location.href = "index.html"; // puedes cambiar la ruta
+}
+</script>
+
+</body>
+</html>
