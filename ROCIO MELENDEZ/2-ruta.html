@@ -40,6 +40,20 @@ body { font-family: Arial; margin:0; }
 </div>
 
 <div id="map"></div>
+<button onclick="cambiarEstado()">Entregado</button>
+
+<p id="estado">Estado: Empaquetando</p>
+
+<script>
+  function cambiarEstado() {
+    document.getElementById("estado").innerText = "Estado: Entregado";
+    // Después de 2 segundos, pasa a la siguiente página
+    setTimeout(() => {
+      window.location.href = "3-pedido entregado.html";
+    }, 2000);
+  }
+</script>
+
 
 <script>
 // 📦 BODEGA (San Salvador)
